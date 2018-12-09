@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% import "_pages.html" as page %}
+
+{% block content %}
+<div>
+{% if posts %}
+{% for post in posts %}
+<h3 align="center">{{ post.title }}</h3>
+<p align="center">Author: <a href="{{ url_for('user.users', username=post.author.username) }}">{{ post.author.username }}</a> </p>
+
+{% if post.body_html %}
+    {{ post.body_html | safe }}
+{% else %}
+    {{post.body }}
+{% endif %}
+
+<i class="right"> posted {{ moment(post.timestamp).fromNow() }}</i>
+<br>
+{% if current_user.is_authenticated %}
+{% if post.like_num.filter_by(liker_id=current_user.id).first() == None %}
+    <a href="{{ url_for('user.like',id=post.id) }}" class="btn btn-info btn-lg">
+      <span class="glyphicon glyphicon-thumbs-up"></span> Like|{{ post.like_num.count() }}
+    </a>
+{% else %}
+    <a href="{{ url_for('user.unlike',id=post.id) }}" class="btn btn-info btn-lg">
+      <span class="glyphicon glyphicon-thumbs-down"></span> Undo like|{{ post.like_num.count() }}
+    </a>
+{% endif %}
+{% else %}
+    <a href="{{ url_for('user.like',id=post.id) }}" class="btn btn-info btn-lg">
+      <span class="glyphicon glyphicon-thumbs-up"></span> Like|{{ post.like_num.count() }}
+    </a>
+{% endif %}
+{% endfor %}
+{% endif %}
+<hr>
+<!-- Reply Manageement. Only author can reply and delete user replies. Deleted replies are invisible to other users -->
+<h3><i>{{ post.comments.count() }} replies</i></h3>
+<div>
+    {% for comment in comments %}
+    {% if not comment.disabled %}
+    <ul class="list-group">
+        {% if comment.comment_type=='comment' %}
+        <li class="list-group-item">
+            <div>
+                <img src="{{comment.author.gravatar(size=30)}}">
+                <a href="{{url_for('user.users', username=comment.author.username)}}">
+                    {{ comment.author.username }}
+                </a>:
+                {% if current_user.username == post.author.username %}
+                    <h4><span class="right label label-danger">
+                        <a class="taga" href="{{ url_for('user.delate',id=comment.id) }}">Delete</a>
+                    </span></h4>
+                {% endif %}
+                <span class="right"> posted {{ moment(comment.timestamp).fromNow() }}</span>
+                <span class="right"><a href="{{ url_for('user.reply',id=comment.id) }}">Reply</a> </span>
+            </div>
+            <div class="comments">
+                <p>
+                {% if comment.body_html %}
+                    {{ comment.body_html | safe }}
+                {% else %}
+                    {{ comment.body }}
+                {% endif %}
+                </p>
+            </div>
+        </li>
+        {% endif %}
+        {% if comment.comment_type=='reply' %}
+        <li class="list-group-item">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-comment"></span> Reply to {{ comment.reply_to }}:
+                    </h3>
+                </div>
+            </div>
+            <div>
+                <img src="{{comment.author.gravatar(size=30)}}">
+                <a href="{{url_for('user.users', username=comment.author.username)}}">
+                    {{ comment.author.username }}
+                </a>:
+                {% if current_user.username == post.author.username %}
+                    <h4><span class="right label label-danger">
+                        <a class="taga" href="{{ url_for('user.delate',id=comment.id) }}">Delete</a>
+                    </span></h4>
+                {% endif %}
+                <span class="right"> posted {{ moment(comment.timestamp).fromNow() }}</span>
+                <span class="right"><a href="{{ url_for('user.reply',id=comment.id) }}">Reply</a> </span>
+            </div>
+            <div class="comments">
+                <p>
+                {% if comment.body_html %}
+                    {{ comment.body_html | safe }}
+                {% else %}
+                    {{ comment.body }}
+                {% endif %}
+                </p>
+            </div>
+        </li>
+        {% endif %}
+    </ul>
+    {% else %}
+        {% if current_user.username == post.author.username %}
+        <ul class="list-group">
+            {% if comment.comment_type=='comment' %}
+            <li class="list-group-item">
+
+                <div>
+                    <img src="{{comment.author.gravatar(size=30)}}">
+                    <a href="{{url_for('user.users', username=comment.author.username)}}">
+                        {{ comment.author.username }}
+                    </a>:
+                        <h4><span class="right label label-default">
+                            <a class="tags" href="{{ url_for('user.recover',id=comment.id) }}">Resume</a>
+                        </span></h4>
+                    <span class="right"> posted {{ moment(comment.timestamp).fromNow() }}</span>
+                </div>
+                <div class="comments">
+                    <p>
+                    {% if comment.body_html %}
+                        {{ comment.body_html | safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                    </p>
+                </div>
+            </li>
+            {% endif %}
+            {% if comment.comment_type=='reply' %}
+            <li class="list-group-item">
+                <div>
+                    <img src="{{comment.author.gravatar(size=30)}}">
+                    <a href="{{url_for('user.users', username=comment.author.username)}}">
+                        {{ comment.author.username }}
+                    </a>:
+                        <h4><span class="right label label-danger">
+                            <a class="taga" href="{{ url_for('user.recover',id=comment.id) }}">Resume</a>
+                        </span></h4>
+                    <span class="right"> posted {{ moment(comment.timestamp).fromNow() }}</span>
+                </div>
+                <div class="comments">
+                    <p>
+                    {% if comment.body_html %}
+                        {{ comment.body_html | safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                    </p>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    {% endif %}
+    {% endfor %}
+</div>
+
+<div class="pagination">
+    {{ page.pages(pagination, 'user.post', fragment='#comments', id=posts[0].id) }}
+</div>
+<hr>
+<form action="" method="post" name="comment">
+    {{form.hidden_tag()}}
+    <h4>Reply</h4>
+    {{form.body(class="form-control",rows="3")}}<br>
+    {% for error in form.body.errors %}
+        <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <p>
+        {% if current_user.is_authenticated %}
+        <input class="btn btn-default" type="submit" value="Post">
+        {% else %}
+        <a href="{{ url_for('auth.login') }}">
+            <h4>Please login, stranger.</h4>
+        </a>
+        {% endif %}
+    </p>
+</form>
+</div>
+{% endblock %}

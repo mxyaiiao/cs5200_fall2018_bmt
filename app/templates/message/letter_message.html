@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row clearfix">
+    <div class="col-md-3 column">
+        <a href="#" class="list-group-item btn btn-info btn-lg active">
+          <span class="glyphicon glyphicon-envelope"></span> Private message
+        </a><hr>
+        <a href="{{ url_for('message.comment_message') }}" class="list-group-item">
+            <span class="badge">{{ comments }}</span><span class="glyphicon glyphicon-comment"></span> Comments
+        </a>
+        <a href="{{ url_for('message.like_message') }}" class="list-group-item">
+            <span class="badge">{{ likes }}</span><span class="glyphicon glyphicon-thumbs-up"></span> Likes
+        </a>
+        <a href="{{ url_for('message.follow_message') }}" class="list-group-item">
+            <span class="badge">{{ follows }}</span><span class="glyphicon glyphicon-star"></span> Follows
+        </a>
+    </div>
+    <div class="col-md-9 column">
+        All messages.<hr>
+        {% if not conversations %}
+        <h4>No recent message.</h4>
+        {% else %}
+        <ul class="list-group">
+            {% for conv in conversations %}
+            <li class="list-group-item">
+                <a href="{{ url_for('user.users',username=conv.from_user.username) }}">
+                    {{ conv.from_user.username }}
+                </a> sent you a message.
+                <a href="{{ url_for('message.write_letter',id=conv.from_user.id) }}"> Reply>>></a>
+                <a href="{{ url_for('message.delete_letter',id=conv.id) }}">
+                    <span class="label label-danger right">Delete</span>
+                </a>
+            </li><br>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
