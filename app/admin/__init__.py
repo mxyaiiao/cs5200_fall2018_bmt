@@ -1,5 +1,3 @@
-from flask import Blueprint
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-admin = Blueprint('admin', __name__)
-
-from . import views

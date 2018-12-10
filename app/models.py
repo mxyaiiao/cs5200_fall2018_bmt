@@ -62,8 +62,8 @@ class User(UserMixin,db.Model):
         return self.role is not None and \
                (self.role.permissions & permissions) == permissions
 
-    def is_administrator(self):
-        return self.operation(Permission.ADMINISTER)
+    def is_moderator(self):
+        return self.operation(Permission.MODERATION)
 
     # Follow
     def follow(self, user):
@@ -151,11 +151,12 @@ class Role(db.Model):
             'User': (Permission.FOLLOW |
                      Permission.COMMENT |
                      Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, True),
-            'Administrator': (0xff, False)
+#            'Moderator': (Permission.FOLLOW |
+#                          Permission.COMMENT |
+#                          Permission.WRITE_ARTICLES |
+#                          Permission.MODERATE_COMMENTS, True),
+            'Moderator': (0xff, False),
+            'Admin': (0xff, False),
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -174,7 +175,7 @@ class Permission:
     COMMENT = 0x02
     WRITE_ARTICLES = 0x04
     MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+    MODERATION = 0x80
 
 @whooshee.register_model('title','body')
 class Post(db.Model):
@@ -246,7 +247,7 @@ class AnonymousUser(AnonymousUserMixin):
     def operation(self, permissions):
         return False
 
-    def is_administrator(self):
+    def is_moderator(self):
         return False
 
 lm.anonymous_user = AnonymousUser
@@ -299,12 +300,12 @@ class Conversation(db.Model):
     to_user = db.relationship('User', lazy='joined', foreign_keys=[to_user_id])
     from_user = db.relationship('User', lazy='joined', foreign_keys=[from_user_id])
 
-# Admin
-class Admin(db.Model):
-    __tablename__ = 'admin'
+# Moderator
+class Moderator(db.Model):
+    __tablename__ = 'moderator'
     id = db.Column(db.Integer, primary_key=True)
     notice = db.Column(db.String(25))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow())
 
     def __repr__(self):
-        return '<Admin %r>' % (self.notice)
+        return '<Moderator %r>' % (self.notice)

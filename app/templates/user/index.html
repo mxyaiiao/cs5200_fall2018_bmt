@@ -24,9 +24,9 @@
             </button>
         </a>
         {% endif %}
-        {% if current_user.operation(Permission.ADMINISTER) %}
+        {% if current_user.operation(Permission.MODERATION) %}
         |
-        <a href="{{ url_for('admin.index') }}">
+        <a href="{{ url_for('moderator.index') }}">
             <button type="button" class="btn btn-default btn-sm">
               <span class="glyphicon glyphicon-cog"></span> Manager
             </button>

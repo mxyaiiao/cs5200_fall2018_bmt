@@ -51,7 +51,7 @@ def new_post():
 def edit_post(id):
     post = Post.query.get_or_404(id)
     if g.current_user != post.author and \
-            not g.current_user.operation(Permission.ADMINISTER):
+            not g.current_user.operation(Permission.MODERATION):
         return forbidden('Insufficient permissions')
     post.title = request.json.get('title', post.title)
     post.body = request.json.get('body', post.body)

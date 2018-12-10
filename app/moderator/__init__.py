@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-message = Blueprint('message', __name__)
+moderator = Blueprint('moderator', __name__)
 
 from . import views

@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from .. import db
 from . import user
 from .forms import ProfileForm, PostForm, CommentForm, ReplyForm, SearchForm, EditpostForm
-from ..models import User, Post, Comment, Like, Permission, Admin
+from ..models import User, Post, Comment, Like, Permission, Moderator
 from ..decorators import permission_required
 
 
@@ -20,7 +20,7 @@ def before_request():
 @user.route('/')
 @user.route('/index')
 def index():
-    notice = Admin.query.order_by(Admin.timestamp.desc()).first()
+    notice = Moderator.query.order_by(Moderator.timestamp.desc()).first()
     if notice:
         notice=notice.notice
     page = request.args.get('page', 1, type=int)
@@ -218,7 +218,7 @@ def delate(id):
 def edit(id):
     post = Post.query.get_or_404(id)
     if current_user != post.author and \
-        not current_user.operation(Permission.ADMINISTER):
+        not current_user.operation(Permission.MODERATION):
         abort(403)
     form = EditpostForm()
     if form.validate_on_submit():
