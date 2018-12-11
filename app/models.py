@@ -59,11 +59,13 @@ class User(UserMixin,db.Model):
 
     # Check Privilege
     def operation(self, permissions):
-        return self.role is not None and \
-               (self.role.permissions & permissions) == permissions
+        return (self.role is not None) and (self.role.permissions & permissions == permissions)
 
     def is_moderator(self):
         return self.operation(Permission.MODERATION)
+    
+    def is_monitor(self):
+        return self.operation(Permission.MONITOR)
 
     # Follow
     def follow(self, user):
@@ -148,15 +150,9 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-#            'Moderator': (Permission.FOLLOW |
-#                          Permission.COMMENT |
-#                          Permission.WRITE_ARTICLES |
-#                          Permission.MODERATE_COMMENTS, True),
+            'User': (0x07, True),
+            'Monitor': (0x0f, True),
             'Moderator': (0xff, False),
-            'Admin': (0xff, False),
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -174,7 +170,7 @@ class Permission:
     FOLLOW = 0x01
     COMMENT = 0x02
     WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
+    MONITOR = 0x08
     MODERATION = 0x80
 
 @whooshee.register_model('title','body')
@@ -249,6 +245,9 @@ class AnonymousUser(AnonymousUserMixin):
 
     def is_moderator(self):
         return False
+    
+    def is_monitor(self):
+        return False
 
 lm.anonymous_user = AnonymousUser
 
@@ -309,3 +308,14 @@ class Moderator(db.Model):
 
     def __repr__(self):
         return '<Moderator %r>' % (self.notice)
+
+# Monitor
+class Monitor(db.Model):
+    __tablename__ = 'monitor'
+    id = db.Column(db.Integer, primary_key=True)
+    notice = db.Column(db.String(25))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow())
+
+    def __repr__(self):
+        return '<Monitor %r>' % (self.notice)
+    

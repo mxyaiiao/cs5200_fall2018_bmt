@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from .. import db
 from . import user
 from .forms import ProfileForm, PostForm, CommentForm, ReplyForm, SearchForm, EditpostForm
-from ..models import User, Post, Comment, Like, Permission, Moderator
+from ..models import User, Post, Comment, Like, Permission, Moderator, Monitor
 from ..decorators import permission_required
 
 

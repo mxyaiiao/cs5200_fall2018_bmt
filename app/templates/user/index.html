@@ -24,14 +24,22 @@
             </button>
         </a>
         {% endif %}
-        {% if current_user.operation(Permission.MODERATION) %}
+        {% if current_user.operation(Permission.MONITOR) %}
         |
-        <a href="{{ url_for('moderator.index') }}">
+        <a href="{{ url_for('monitor.index') }}">
             <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-cog"></span> Manager
+              <span class="glyphicon glyphicon-cog"></span> Monitor
             </button>
         </a>
         {% endif %}
+	{% if current_user.operation(Permission.MODERATION) %}
+	|
+	<a href="{{ url_for('moderator.index') }}">
+	    <button type="button" class="btn btn-default btn-sm">
+	      <span class="glyphicon glyphicon-cog"></span> Manage
+	    </button>
+	</a>
+	{% endif %}
     </div>
 </div>
 <hr>

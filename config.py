@@ -8,7 +8,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
+#    BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
 
     # Mail Support
     MAIL_SERVER = 'smtp.gmail.com'
