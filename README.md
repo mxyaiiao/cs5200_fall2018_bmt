@@ -26,7 +26,12 @@ $ python manage.py runserver --host 0.0.0.0
 ### Visit
 Navigate to http://localhost:5000/ . The initialization is already dumped into SQLite.
 
-
+## Useful Links
+### Technology Stack
+* https://github.com/pandao/editor.md
+* http://flask.pocoo.org/
+### YouTube Link
 
 [description]: https://github.com/mxyaiiao/cs5200_fall2018_bmt/wiki/Project
 [design]: https://github.com/mxyaiiao/cs5200_fall2018_bmt/wiki/Design
+
