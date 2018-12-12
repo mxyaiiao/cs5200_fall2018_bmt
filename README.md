@@ -21,7 +21,6 @@ $ cd cs5200_fall2018_bmt
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirement.txt
-$ python manage.py deploy
 $ python manage.py runserver --host 0.0.0.0
 ```
 ### Visit

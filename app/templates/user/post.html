@@ -35,7 +35,7 @@
 {% endif %}
 <hr>
 <!-- Reply Manageement. Only author can reply and delete user replies. Deleted replies are invisible to other users -->
-<h3><i>{{ post.comments.count() }} replies</i></h3>
+<h3><i>{{ post.comments.count() }} comments</i></h3>
 <div>
     {% for comment in comments %}
     {% if not comment.disabled %}

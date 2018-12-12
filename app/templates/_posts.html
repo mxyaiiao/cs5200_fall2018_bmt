@@ -6,7 +6,7 @@
         {{post.author.username}}
     </a><i> posted {{ moment(post.timestamp).fromNow() }}</i>
      <i class="right">Views: <span class="badge">{{ post.view_num }}</span></i>
-    <i class="right">Replies: <span class="badge">{{ post.comments.count() }}</span></i>
+    <i class="right">Comments: <span class="badge">{{ post.comments.count() }}</span></i>
     <i class="right">Likes: <span class="badge">{{ post.like_num.count() }}</span></i>
 </div>
 <div class="art_outline">
