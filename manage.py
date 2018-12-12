@@ -8,7 +8,7 @@ from flask_admin import Admin, BaseView, expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 
 from app import create_app, db
-from app.models import User, Role, Post, Comment, Follow, Permission, Monitor, Moderator
+from app.models import User, Role, Post, Comment, Follow, Permission, Noticer, Monitor, Moderator
 from app.admin.views import UserModelView, PostModelView, CommentModelView
 
 
@@ -31,7 +31,7 @@ def make_shell_context():
 
     return dict(app=app, db=db, User=User, Role=Role, Post=Post, \
                 Follow=Follow, Permission=Permission, Moderator=Moderator,
-                Monitor=Monitor, Admin=Admin)
+                Monitor=Monitor, Noticer=Noticer, Admin=Admin)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)

@@ -64,6 +64,9 @@ class User(UserMixin,db.Model):
     def is_moderator(self):
         return self.operation(Permission.MODERATION)
     
+    def is_noticer(self):
+        return self.operation(Permission.NOTICE)
+    
     def is_monitor(self):
         return self.operation(Permission.MONITOR)
 
@@ -151,7 +154,10 @@ class Role(db.Model):
     def insert_roles():
         roles = {
             'User': (0x07, True),
-            'Monitor': (0x0f, True),
+            'Noticer': (Permission.FOLLOW | Permission.COMMENT |
+                        Permission.WRITE_ARTICLES | Permission.NOTICE, True),
+            'Monitor': (Permission.FOLLOW | Permission.COMMENT |
+                        Permission.WRITE_ARTICLES | Permission.MONITOR, True),
             'Moderator': (0xff, False),
         }
         for r in roles:
@@ -171,6 +177,7 @@ class Permission:
     COMMENT = 0x02
     WRITE_ARTICLES = 0x04
     MONITOR = 0x08
+    NOTICE = 0x10
     MODERATION = 0x80
 
 @whooshee.register_model('title','body')
@@ -318,4 +325,15 @@ class Monitor(db.Model):
 
     def __repr__(self):
         return '<Monitor %r>' % (self.notice)
-    
+
+
+# Noticer
+class Noticer(db.Model):
+    __tablename__ = 'noticer'
+    id = db.Column(db.Integer, primary_key=True)
+    notice = db.Column(db.String(25))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow())
+
+    def __repr__(self):
+        return '<Noticer %r>' % (self.notice)
+        

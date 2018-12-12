@@ -24,7 +24,15 @@
             </button>
         </a>
         {% endif %}
-        {% if current_user.operation(Permission.MONITOR) %}
+        {% if current_user.operation(Permission.NOTICE) and not current_user.operation(Permission.MODERATION) %}
+        |
+        <a href="{{ url_for('noticer.index') }}">
+            <button type="button" class="btn btn-default btn-sm">
+              <span class="glyphicon glyphicon-cog"></span> Notice
+            </button>
+        </a>
+        {% endif %}
+        {% if current_user.operation(Permission.MONITOR) and not current_user.operation(Permission.MODERATION) %}
         |
         <a href="{{ url_for('monitor.index') }}">
             <button type="button" class="btn btn-default btn-sm">

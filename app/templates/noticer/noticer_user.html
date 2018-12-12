@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>All users</h3><hr>
+{% if users %}
+{% for user in users %}
+    <ul class="list-group">
+        <li class="list-group-item">
+            <table>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('user.users',username=user.username) }}">
+                            <img class="images" src="{{user.gravatar(size=150)}}">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('user.users',username=user.username) }}">
+                            <h4>{{ user.username }}</h4>
+                        </a>
+                        {% if user.about_me %}<p>{{user.about_me}}</p>{% endif %}
+                        {% if user.last_seen %}<p><i>Last seen: {{moment(user.last_seen).format('LL')}}</i></p>{% endif %}
+                        <p>Blogs: {{ user.posts.count() }}</p>
+                        <p>Followers: {{ user.followers.count() }}</p>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <span>
+
+                </span>
+                <span class="left">
+                    <br>
+
+                </span>
+
+            </div>
+            <div class="">
+
+            </div>
+        </li>
+    </ul>
+{% endfor %}
+{% endif %}
+{% endblock %}

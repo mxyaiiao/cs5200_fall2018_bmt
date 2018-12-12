@@ -37,6 +37,7 @@ def create_app(config_name):
 
     from .user import user as user_blueprint
     from .auth import auth as auth_blueprint
+    from .noticer import noticer as noticer_blueprint
     from .monitor import monitor as monitor_blueprint
     from .moderator import moderator as moderator_blueprint
     from .message import message as message_blueprint
@@ -44,6 +45,7 @@ def create_app(config_name):
 
     app.register_blueprint(user_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    app.register_blueprint(noticer_blueprint, url_prefix='/noticer')
     app.register_blueprint(monitor_blueprint, url_prefix='/monitor')
     app.register_blueprint(moderator_blueprint, url_prefix='/moderator')
     app.register_blueprint(message_blueprint, url_prefix='/message')
